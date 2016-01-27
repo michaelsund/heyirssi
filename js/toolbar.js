@@ -13,7 +13,7 @@
 //                var window = BrowserWindow.getFocusedWindow(); 
 //                window.maximize(); 
 //           });
-          // dont quit att on cross click if osx
+          // dont quit app on cross click if osx
           if (process.platform !== 'darwin') {
             document.getElementById("close-btn").addEventListener("click", function (e) {
               var window = BrowserWindow.getFocusedWindow();
