@@ -1,0 +1,2 @@
+# heyirssi
+irssi notifications
