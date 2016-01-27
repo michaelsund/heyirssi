@@ -13,11 +13,19 @@
 //                var window = BrowserWindow.getFocusedWindow(); 
 //                window.maximize(); 
 //           });
- 
-          document.getElementById("close-btn").addEventListener("click", function (e) {
-               var window = BrowserWindow.getFocusedWindow();
-               window.close();
-          }); 
+          // dont quit att on cross click if osx
+          if (process.platform !== 'darwin') {
+            document.getElementById("close-btn").addEventListener("click", function (e) {
+              var window = BrowserWindow.getFocusedWindow();
+              window.close();
+            });
+          }
+          else {
+            document.getElementById("close-btn").addEventListener("click", function (e) {
+              var window = BrowserWindow.getFocusedWindow();
+              window.minimize();
+            }); 
+          } 
      }; 
 
      document.onreadystatechange = function () {

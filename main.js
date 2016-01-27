@@ -44,11 +44,16 @@ function createWindow () {
   mainWindow.loadURL('file://' + __dirname + '/index.html');
 
   // Open the DevTools.
-    mainWindow.webContents.openDevTools();
-  mainWindow.on('close', function(e){
-    e.preventDefault();
-    mainWindow.hide();
-  });
+  mainWindow.webContents.openDevTools();
+  
+  // osx special, also in js/toolbar
+  if (process.platform !== 'darwin') {
+    mainWindow.on('close', function(e) {
+      e.preventDefault();
+      mainWindow.hide();
+    }); 
+  }
+  
   mainWindow.on('closed', function() {
     mainWindow = null;
   });
@@ -57,9 +62,11 @@ function createWindow () {
 app.on('ready', createWindow);
 
 app.on('window-all-closed', function () {
-  if (process.platform !== 'darwin') {
     app.quit();
-  }
+  // 
+  // if (process.platform !== 'darwin') {
+  //   app.quit();
+  // }
 });
 
 app.on('activate', function () {
@@ -80,36 +87,38 @@ var toggleNotifications = function() {
   notificationsEnabled = !notificationsEnabled;
 };
 
-const Menu = electron.Menu;
-const Tray = electron.Tray;
 
-var icon = path.join(__dirname, 'pics', 'green.png');
-
-var appIcon = null;
-app.on('ready', function(){
-  appIcon = new Tray(icon);
-  var contextMenu = Menu.buildFromTemplate([
-    {
-      label: 'Notify me',
-      type: 'checkbox',
-      checked: true,
-      click: function() {
-        toggleNotifications();
+if (process.platform !== 'darwin') {
+  const Menu = electron.Menu;
+  const Tray = electron.Tray;
+  var icon = path.join(__dirname, 'pics', 'green.png');
+  var appIcon = null;
+  app.on('ready', function(){
+    appIcon = new Tray(icon);
+    var contextMenu = Menu.buildFromTemplate([
+      {
+        label: 'Notify me',
+        type: 'checkbox',
+        checked: true,
+        click: function() {
+          toggleNotifications();
+        }
+      },
+      {
+        label: 'Open',
+        click: function() {
+          mainWindow.show();
+        }
+      },
+      {
+        label: 'Quit',
+        click: function() {
+          app.quit();
+          mainWindow = null;
+        }
       }
-    },
-    {
-      label: 'Open',
-      click: function() {
-        mainWindow.show();
-      }
-    },
-    {
-      label: 'Quit',
-      click: function() {
-        app.quit();
-      }
-    }
-  ]);
-  appIcon.setToolTip('Hiya there matey!');
-  appIcon.setContextMenu(contextMenu);
-});
+    ]);
+    appIcon.setToolTip('Hiya there matey!');
+    appIcon.setContextMenu(contextMenu);
+  });
+}
