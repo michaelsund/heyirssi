@@ -6,28 +6,29 @@ const ipc = require('electron').ipcRenderer;
 @Component({
   selector: 'options',
   template: `
-    <button (click)="testfunc()">Click me!</button>
-    <br/>
-    <br/>
-    <div class="onoffswitch">
-      <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
+    <p>Notifications is: {{options.notificationText}}</p>
+    <div class="onoffswitch">  
+      <input type="checkbox" (click)="testfunc()" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
       <label class="onoffswitch-label" for="myonoffswitch"></label>
     </div>
+
   `
 })
 
 export class AppComponent {
-  // public notificationsEnabled = true;
   public options: Options = {
-    notificationsEnabled: true
+    notificationsEnabled: true,
+    notificationText: 'Enabled'
   }
   public testfunc = function() {
     if (this.options.notificationsEnabled) {
       this.options.notificationsEnabled = false;
+      this.options.notificationText = 'Disabled';
       ipc.send('options', this.options);
     }
     else {
       this.options.notificationsEnabled = true;
+      this.options.notificationText = 'Enabled';
       ipc.send('options', this.options);
     }
   }
@@ -35,4 +36,5 @@ export class AppComponent {
 
 interface Options {
   notificationsEnabled: boolean;
+  notificationText: string;
 }

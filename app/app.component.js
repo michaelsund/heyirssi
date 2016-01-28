@@ -21,17 +21,19 @@ System.register(['angular2/core'], function(exports_1) {
             ipc = require('electron').ipcRenderer;
             AppComponent = (function () {
                 function AppComponent() {
-                    // public notificationsEnabled = true;
                     this.options = {
-                        notificationsEnabled: true
+                        notificationsEnabled: true,
+                        notificationText: 'Enabled'
                     };
                     this.testfunc = function () {
                         if (this.options.notificationsEnabled) {
                             this.options.notificationsEnabled = false;
+                            this.options.notificationText = 'Disabled';
                             ipc.send('options', this.options);
                         }
                         else {
                             this.options.notificationsEnabled = true;
+                            this.options.notificationText = 'Enabled';
                             ipc.send('options', this.options);
                         }
                     };
@@ -39,7 +41,7 @@ System.register(['angular2/core'], function(exports_1) {
                 AppComponent = __decorate([
                     core_1.Component({
                         selector: 'options',
-                        template: "\n    <button (click)=\"testfunc()\">Click me!</button>\n    <br/>\n    <br/>\n    <div class=\"onoffswitch\">\n      <input type=\"checkbox\" name=\"onoffswitch\" class=\"onoffswitch-checkbox\" id=\"myonoffswitch\" checked>\n      <label class=\"onoffswitch-label\" for=\"myonoffswitch\"></label>\n    </div>\n  "
+                        template: "\n    <p>Notifications is: {{options.notificationText}}</p>\n    <div class=\"onoffswitch\">  \n      <input type=\"checkbox\" (click)=\"testfunc()\" name=\"onoffswitch\" class=\"onoffswitch-checkbox\" id=\"myonoffswitch\" checked>\n      <label class=\"onoffswitch-label\" for=\"myonoffswitch\"></label>\n    </div>\n\n  "
                     }), 
                     __metadata('design:paramtypes', [])
                 ], AppComponent);
