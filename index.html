@@ -3,21 +3,39 @@
   <head>
     <title>Electron crap</title>
     <link rel="stylesheet" href="css/custom.css" />
+    <script src="node_modules/es6-shim/es6-shim.min.js"></script>
+    <script src="node_modules/systemjs/dist/system-polyfills.js"></script>
+
+    <script src="node_modules/angular2/bundles/angular2-polyfills.js"></script>
+    <script src="node_modules/systemjs/dist/system.src.js"></script>
+    <script src="node_modules/rxjs/bundles/Rx.js"></script>
+    <script src="node_modules/angular2/bundles/angular2.dev.js"></script>
+    <script>
+      System.config({
+        packages: {
+          app: {
+            format: 'register',
+            defaultExtension: 'js'
+          }
+        }
+      });
+      System.import('app/boot')
+            .then(null, console.error.bind(console));
+    </script>
   </head>
   <body>
     <div id="title-bar">
-        <div id="title">My Life For The Code</div>
-        <div id="title-bar-btns">
-            <!--<button id="min-btn">-</button>
-            <button id="max-btn">+</button>-->
-            <button id="close-btn">x</button>
-        </div>
-     </div>
-     <div id="content">
-          I learned about Electron in Visual Studio Code<br />
-          from <a href="http://www.mylifeforthecode.com">My Life For The Code</a>.
-     </div>
-    
+      <div id="title">heyirssi</div>
+      <div id="title-bar-btns">
+          <!--<button id="min-btn">-</button>
+          <button id="max-btn">+</button>-->
+          <button id="close-btn">x</button>
+      </div>
+    </div>
+    <div id="content">
+      <options>Loading...</options>
+    </div>
+    <!-- <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script> -->
     <script src="js/toolbar.js"></script>
   </body>
 </html>
