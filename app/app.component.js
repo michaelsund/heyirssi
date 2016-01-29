@@ -9,7 +9,7 @@ System.register(['angular2/core'], function(exports_1) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1;
-    var electron, remote, ipc, AppComponent;
+    var electron, remote, ipc, AppComponent, OPTIONS;
     return {
         setters:[
             function (core_1_1) {
@@ -21,33 +21,38 @@ System.register(['angular2/core'], function(exports_1) {
             ipc = require('electron').ipcRenderer;
             AppComponent = (function () {
                 function AppComponent() {
-                    this.options = {
-                        notificationsEnabled: true,
-                        notificationText: 'Enabled'
-                    };
-                    this.testfunc = function () {
-                        if (this.options.notificationsEnabled) {
-                            this.options.notificationsEnabled = false;
-                            this.options.notificationText = 'Disabled';
-                            ipc.send('options', this.options);
-                        }
-                        else {
-                            this.options.notificationsEnabled = true;
-                            this.options.notificationText = 'Enabled';
-                            ipc.send('options', this.options);
-                        }
-                    };
+                    this.options = OPTIONS;
                 }
+                AppComponent.prototype.onSelect = function (options) { this.selectedOption = options; };
+                AppComponent.prototype.updateToApi = function () {
+                    if (this.options.notificationsEnabled) {
+                        this.options.notificationsEnabled = false;
+                        this.options.notificationText = 'Disabled';
+                        ipc.send('options', this.options);
+                        this.options.ips.push('test');
+                    }
+                    else {
+                        this.options.notificationsEnabled = true;
+                        this.options.notificationText = 'Enabled';
+                        ipc.send('options', this.options);
+                    }
+                };
                 AppComponent = __decorate([
                     core_1.Component({
-                        selector: 'options',
-                        template: "\n    <p>Notifications is: {{options.notificationText}}</p>\n    <div class=\"onoffswitch\">  \n      <input type=\"checkbox\" (click)=\"testfunc()\" name=\"onoffswitch\" class=\"onoffswitch-checkbox\" id=\"myonoffswitch\" checked>\n      <label class=\"onoffswitch-label\" for=\"myonoffswitch\"></label>\n    </div>\n\n  "
+                        selector: 'my-options',
+                        template: "\n    <p>Notifications is: {{options.notificationText}}</p>\n    <div class=\"onoffswitch\">\n      <input type=\"checkbox\" (click)=\"updateToApi()\" name=\"onoffswitch\" class=\"onoffswitch-checkbox\" id=\"myonoffswitch\" checked>\n      <label class=\"onoffswitch-label\" for=\"myonoffswitch\"></label>\n    </div>\n    <div *ngFor=\"#ip of options.ips\">\n      <p>{{ip}}</p>\n    </div>\n\n  "
                     }), 
                     __metadata('design:paramtypes', [])
                 ], AppComponent);
                 return AppComponent;
             })();
             exports_1("AppComponent", AppComponent);
+            OPTIONS = { "notificationsEnabled": true, "notificationText": "Enabled", "ips": [] };
+            ipc.send('getips', 'blabla');
+            ipc.on('getips', function (event, arg) {
+                OPTIONS.ips = arg;
+                console.log('ips: ' + OPTIONS.ips);
+            });
         }
     }
 });

@@ -7,9 +7,11 @@ var options =
 {
   notificationsEnabled: true
 };
-var ipc = require('ipc');
+var ipc = require("electron").ipcMain
 var notifier = require('node-notifier');
 var path = require('path');
+var localip = require('./localip').getip();
+
 
 //webserver stuff
 var express = require('express');
@@ -28,6 +30,7 @@ expressapp.post('/', function(req, res) {
 
 expressapp.listen(4852);
 console.log('listening on port: ' + port);
+console.log(localip);
 //webserver stuff end
 
 let mainWindow;
@@ -62,6 +65,13 @@ ipc.on('options', function(event, arg) {
   console.log(arg);
   options = arg;
 });
+
+ipc.on('getips', function(event, arg) {
+  console.log(arg);
+  event.sender.send('getips', localip);
+});
+
+
 
 app.on('ready', createWindow);
 

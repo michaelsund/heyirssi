@@ -1,5 +1,4 @@
 (function () {
- 
       var remote = require('remote'); 
       var BrowserWindow = remote.require('browser-window'); 
  
