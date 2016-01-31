@@ -18,12 +18,14 @@ var express = require('express');
 var expressapp = express();
 var bodyParser = require('body-parser');
 var port = 4852;
+
 expressapp.use(bodyParser.json());
 expressapp.use(bodyParser.urlencoded({ extended: true }));
 
 expressapp.post('/', function(req, res) {
   if (options.notificationsEnabled) {
     popup(req.body.msg, req.body.nick, req.body.channel);
+    mainWindow.webContents.send('messages', req.body);
   }
   res.send("ok");
 });
@@ -37,13 +39,13 @@ let mainWindow;
 
 function createWindow () {
   mainWindow = new BrowserWindow({
-    width: 900,
+    width: 300,
     height: 500,
     'accept-first-mouse': true,
     'title-bar-style': 'hidden',
     frame: false
   });
-  mainWindow.setResizable(true);
+  mainWindow.setResizable(false);
   mainWindow.setMenuBarVisibility(true);
   mainWindow.setSkipTaskbar(true);
   mainWindow.loadURL('file://' + __dirname + '/index.html');
@@ -108,7 +110,7 @@ var popup = function(msg, nick, channel) {
 
 const Menu = electron.Menu;
 const Tray = electron.Tray;
-var icon = path.join(__dirname, 'pics', 'green.png');
+var icon = path.join(__dirname, 'pics', 'heyirssi-icon-40x40.png');
 var appIcon = null;
 app.on('ready', function(){
 appIcon = new Tray(icon);

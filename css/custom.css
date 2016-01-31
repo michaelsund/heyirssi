@@ -1,3 +1,4 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300);
 html {
  margin: 0px;
  padding: 0px;
@@ -7,14 +8,35 @@ body {
  padding: 0px;
  margin: 0px;
  background-color: #2D2D30;
- border: 1px solid #68217A;
- /*border-bottom: 24px solid #68217A;*/
+ border: 1px solid #2196f3;
+ font-family: 'Open Sans', sans-serif;
+ font-size: 12px;
  position: absolute;
  top: 0px;
  left: 0px;
  right: 0px;
  bottom: 0px;
 }
+
+.daimage {
+  margin: auto;
+  width: 75%;
+}
+
+.block {
+  display:inline-block;
+}
+
+.notification {
+  position: relative;
+  top: -4px;
+  margin-left: 20px;
+}
+
+.space-left {
+  margin-left: 20px;
+}
+
 
 #title-bar {
  -webkit-app-region: drag;

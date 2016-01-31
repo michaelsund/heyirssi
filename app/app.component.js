@@ -9,7 +9,7 @@ System.register(['angular2/core'], function(exports_1) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
     var core_1;
-    var electron, remote, ipc, AppComponent, OPTIONS;
+    var electron, ipc, AppComponent, OPTIONS;
     return {
         setters:[
             function (core_1_1) {
@@ -17,7 +17,6 @@ System.register(['angular2/core'], function(exports_1) {
             }],
         execute: function() {
             electron = require('electron');
-            remote = electron.remote;
             ipc = require('electron').ipcRenderer;
             AppComponent = (function () {
                 function AppComponent() {
@@ -29,7 +28,6 @@ System.register(['angular2/core'], function(exports_1) {
                         this.options.notificationsEnabled = false;
                         this.options.notificationText = 'Disabled';
                         ipc.send('options', this.options);
-                        this.options.ips.push('test');
                     }
                     else {
                         this.options.notificationsEnabled = true;
@@ -37,10 +35,18 @@ System.register(['angular2/core'], function(exports_1) {
                         ipc.send('options', this.options);
                     }
                 };
+                AppComponent.prototype.playsound = function () {
+                    // For future use when we can recieve messages in here properly
+                    var random = Math.floor(Math.random() * (18 - 1 + 1)) + 1;
+                    var audio = new Audio(__dirname + '/sounds/' + random + '.wav');
+                    audio.volume = 0.1;
+                    audio.currentTime = 0;
+                    audio.play();
+                };
                 AppComponent = __decorate([
                     core_1.Component({
                         selector: 'my-options',
-                        template: "\n    <p>Notifications is: {{options.notificationText}}</p>\n    <div class=\"onoffswitch\">\n      <input type=\"checkbox\" (click)=\"updateToApi()\" name=\"onoffswitch\" class=\"onoffswitch-checkbox\" id=\"myonoffswitch\" checked>\n      <label class=\"onoffswitch-label\" for=\"myonoffswitch\"></label>\n    </div>\n    <div *ngFor=\"#ip of options.ips\">\n      <p>{{ip}}</p>\n    </div>\n\n  "
+                        template: "\n    <div>\n      <div class=\"block notification\">\n        <p>Notifications {{options.notificationText}}</p>\n      </div>\n      <div class=\"block space-left\">\n        <div class=\"onoffswitch\">\n          <input type=\"checkbox\" (click)=\"updateToApi()\" name=\"onoffswitch\" class=\"onoffswitch-checkbox\" id=\"myonoffswitch\" checked>\n          <label class=\"onoffswitch-label\" for=\"myonoffswitch\"></label>\n        </div>\n      </div>\n    </div>\n    <div class=\"space-left\">\n      <p>Ip: {{options.ips}}</p>\n    </div>\n  "
                     }), 
                     __metadata('design:paramtypes', [])
                 ], AppComponent);
