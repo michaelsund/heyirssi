@@ -9,7 +9,7 @@
         "tsc:w": "tsc -w",
         "lite": "lite-server",
         "dev": "concurrent \"npm run tsc:w\" \"npm start\" ",
-        "package": "electron-packager ./ SoundMachine --all --out ~/Desktop/SoundMachine --version 0.30.2 --overwrite --icon=./app/img/app-icon.icns"
+        "package": "electron-packager ./ HeyIrssi --all --out ./builds --version 1.0.0 --overwrite --icon=./pics/heyirssi-icon-osx-40x40.icns"
     },
     "dependencies": {
         "body-parser": "^1.14.2",

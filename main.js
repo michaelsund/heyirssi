@@ -51,12 +51,11 @@ function createWindow () {
   mainWindow.loadURL('file://' + __dirname + '/index.html');
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
   mainWindow.on('close', function(e) {
     e.preventDefault();
     mainWindow.hide();
   });
-
 
   mainWindow.on('closed', function() {
     mainWindow = null;
@@ -107,27 +106,28 @@ var popup = function(msg, nick, channel) {
 //   console.log('notify: ' + notify);
 // };
 
-
-const Menu = electron.Menu;
-const Tray = electron.Tray;
-var icon = path.join(__dirname, 'pics', 'heyirssi-icon-40x40.png');
-var appIcon = null;
-app.on('ready', function(){
-appIcon = new Tray(icon);
-var contextMenu = Menu.buildFromTemplate([
-  {
-    label: 'Open',
-    click: function() {
-      mainWindow.show();
+if (process.platform !== 'darwin') {
+  const Menu = electron.Menu;
+  const Tray = electron.Tray;
+  var icon = path.join(__dirname, 'pics', 'heyirssi-icon-40x40.png');
+  var appIcon = null;
+  app.on('ready', function(){
+  appIcon = new Tray(icon);
+  var contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Open',
+      click: function() {
+        mainWindow.show();
+      }
+    },
+    {
+      label: 'Quit',
+      click: function() {
+        app.quit();
+      }
     }
-  },
-  {
-    label: 'Quit',
-    click: function() {
-      app.quit();
-    }
-  }
-]);
-appIcon.setToolTip(appver);
-appIcon.setContextMenu(contextMenu);
-});
+  ]);
+  appIcon.setToolTip(appver);
+  appIcon.setContextMenu(contextMenu);
+  });
+}
