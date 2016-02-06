@@ -1,0 +1,41 @@
+<div class="wrapper">
+    <div class="left">
+        <div class="daimage">
+            <img src="pics/heyirssi.png" height="200px" width="200px"/>
+        </div>
+        <div>
+            <div class="block notification">
+                <p>Notifications {{options.notificationText}}</p>
+            </div>
+            <div class="block">
+                <div class="onoffswitch space-left">
+                    <input type="checkbox" (click)="updateToApi()" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
+                    <label class="onoffswitch-label" for="myonoffswitch"></label>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div>
+            <div class="block notification">
+                <p>Pudge sounds {{options.pudgeSoundsText}}</p>
+            </div>
+            <div class="block">
+                <div class="onoffswitch space-left-pudge">
+                    <input type="checkbox" (click)="sounds()" name="onoffswitch" class="onoffswitch-checkbox" id="pudgeswitch" checked>
+                    <label class="onoffswitch-label" for="pudgeswitch"></label>
+                </div>
+            </div>
+            <div class="space-left space-right">
+                <p>Ip: {{options.ips}}</p>
+            </div>
+        </div>
+    </div>
+    <div class="right">  
+        <span *ngIf="messageService.messagelist <= 0">
+            No messages logged yet..
+        </span>
+        <div *ngFor="#x of messageService.messagelist" class="msgcont">
+            {{ x.time | date:'MMM/dd HH:mm' }} <span style="color: #2196f3;">{{ x.nick }}</span>@<span style="color: #2196f3;">{{ x.channel }}:</span> {{ x.msg }}
+        </div>
+    </div>
+</div>

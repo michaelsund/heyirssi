@@ -1,9 +1,10 @@
-# Needed to install libwww-perl and libjson-perl on ubuntu server
+# Needed to install libwww-perl and libjson-perl on ubuntu
 use strict;
 use Irssi;
 use POSIX qw/strftime/;
 use LWP::UserAgent;
 use JSON qw/encode_json/;
+use threads;
 
 
 our $VERSION = '1.0';
@@ -13,14 +14,14 @@ our %IRSSI = (
 );
 
 # Notes:
-# - Gonna implement setting hosts and mynick via irssi, or getting current nick
+# - Implement setting hosts and mynick via irssi, or getting current nick
 # directly from irssi.
 # - Timer should be used, in case of spam
 
 my $timer;
-
+my @threads;
 my $notify_flag = 1;
-my @host_ips = ('13.37.1.10','13.37.1.114');
+my @host_ips = ('13.37.1.10', '13.37.1.114');
 my $host_port = '4852';
 my $mynick = 'timotej';
 
@@ -41,8 +42,8 @@ Irssi::print('on port ' . $host_port);
 sub sig_message_public {
     my ($server, $msg, $nick, $nick_addr, $target) = @_;
     if(index(lc($msg), lc($mynick)) != -1) {
-      $msg = sanitise_msg($msg);
-      send_to_server($msg, $nick, $target);
+        $msg = sanitise_msg($msg);
+        send_to_server($msg, $nick, $target);
     }
 }
 
@@ -77,14 +78,16 @@ sub sanitise_msg{
 }
 
 sub send_to_server {
-  my $x;
-  my ($msg, $nick, $target) = @_;
-  foreach $x (@host_ips) {
-    my $server_endpoint = 'http://' . $x . ':' . $host_port . '/';
-    my $req = HTTP::Request->new(POST => $server_endpoint);
-    $req->header('content-type' => 'application/json');
-    my $json = '{"msg":' . '"' . $msg . '"' . ',' . '"nick":' . '"' . $nick . '"' .  ',' . '"channel":' . '"' . $target . '"' .'}';
-    $req->content($json);
-    $ua->request($req);   
-  }
+    my $x;
+    my ($msg, $nick, $target) = @_;
+    foreach $x (@host_ips) {
+        push @threads, async {
+            my $server_endpoint = 'http://' . $x . ':' . $host_port . '/';
+            my $req = HTTP::Request->new(POST => $server_endpoint);
+            $req->header('content-type' => 'application/json');
+            my $json = '{"msg":' . '"' . $msg . '"' . ',' . '"nick":' . '"' . $nick . '"' .  ',' . '"channel":' . '"' . $target . '"' .'}';
+            $req->content($json);
+            $ua->request($req);
+        };   
+    }
 }

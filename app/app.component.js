@@ -1,4 +1,4 @@
-System.register(['angular2/core'], function(exports_1) {
+System.register(['angular2/core', './options-model', './message-service'], function(exports_1) {
     var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
         var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
         if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -8,21 +8,51 @@ System.register(['angular2/core'], function(exports_1) {
     var __metadata = (this && this.__metadata) || function (k, v) {
         if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
     };
-    var core_1;
-    var electron, ipc, AppComponent, OPTIONS;
+    var core_1, options_model_1, message_service_1;
+    var electron, ipc, AppComponent;
     return {
         setters:[
             function (core_1_1) {
                 core_1 = core_1_1;
+            },
+            function (options_model_1_1) {
+                options_model_1 = options_model_1_1;
+            },
+            function (message_service_1_1) {
+                message_service_1 = message_service_1_1;
             }],
         execute: function() {
             electron = require('electron');
             ipc = require('electron').ipcRenderer;
+            // dev/prod
+            core_1.enableProdMode();
             AppComponent = (function () {
-                function AppComponent() {
-                    this.options = OPTIONS;
+                function AppComponent(messageService, zone) {
+                    var _this = this;
+                    this.messageService = messageService;
+                    this.zone = zone;
+                    this.options = new options_model_1.Options();
+                    ipc.send('getips', 'blabla');
+                    ipc.on('getips', function (event, arg) {
+                        zone.run(function () {
+                            _this.options.ips = arg;
+                        });
+                    });
+                    ipc.on('messages', function (event, arg) {
+                        console.log("new message");
+                        zone.run(function () {
+                            _this.newMessage(arg);
+                        });
+                        if (_this.options.pudgeSounds) {
+                            _this.playsound();
+                        }
+                    });
                 }
-                AppComponent.prototype.onSelect = function (options) { this.selectedOption = options; };
+                AppComponent.prototype.newMessage = function (msg) {
+                    console.log('got new message ' + JSON.stringify(msg));
+                    this.messageService.addMessage(msg);
+                    console.log(JSON.stringify(this.messageService));
+                };
                 AppComponent.prototype.updateToApi = function () {
                     if (this.options.notificationsEnabled) {
                         this.options.notificationsEnabled = false;
@@ -35,8 +65,16 @@ System.register(['angular2/core'], function(exports_1) {
                         ipc.send('options', this.options);
                     }
                 };
+                AppComponent.prototype.sounds = function () {
+                    if (this.options.pudgeSounds) {
+                        this.options.pudgeSoundsText = "Disabled";
+                    }
+                    else {
+                        this.options.pudgeSoundsText = "Enabled";
+                    }
+                    this.options.pudgeSounds = !this.options.pudgeSounds;
+                };
                 AppComponent.prototype.playsound = function () {
-                    // For future use when we can recieve messages in here properly
                     var random = Math.floor(Math.random() * (18 - 1 + 1)) + 1;
                     var audio = new Audio(__dirname + '/sounds/' + random + '.wav');
                     audio.volume = 0.1;
@@ -46,19 +84,13 @@ System.register(['angular2/core'], function(exports_1) {
                 AppComponent = __decorate([
                     core_1.Component({
                         selector: 'my-options',
-                        template: "\n    <div>\n      <div class=\"block notification\">\n        <p>Notifications {{options.notificationText}}</p>\n      </div>\n      <div class=\"block space-left\">\n        <div class=\"onoffswitch\">\n          <input type=\"checkbox\" (click)=\"updateToApi()\" name=\"onoffswitch\" class=\"onoffswitch-checkbox\" id=\"myonoffswitch\" checked>\n          <label class=\"onoffswitch-label\" for=\"myonoffswitch\"></label>\n        </div>\n      </div>\n    </div>\n    <div class=\"space-left\">\n      <p>Ip: {{options.ips}}</p>\n    </div>\n  "
+                        templateUrl: './app/html/app.component.html',
                     }), 
-                    __metadata('design:paramtypes', [])
+                    __metadata('design:paramtypes', [message_service_1.MessageService, core_1.NgZone])
                 ], AppComponent);
                 return AppComponent;
             })();
             exports_1("AppComponent", AppComponent);
-            OPTIONS = { "notificationsEnabled": true, "notificationText": "Enabled", "ips": [] };
-            ipc.send('getips', 'blabla');
-            ipc.on('getips', function (event, arg) {
-                OPTIONS.ips = arg;
-                console.log('ips: ' + OPTIONS.ips);
-            });
         }
     }
 });

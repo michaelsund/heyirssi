@@ -16,11 +16,51 @@ body {
  left: 0px;
  right: 0px;
  bottom: 0px;
+ overflow-y: hidden;
+}
+
+::-webkit-scrollbar
+{
+  width: 12px;  /* for vertical scrollbars */
+  height: 12px; /* for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track
+{
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb
+{
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.left {
+  order: 1;
+  flex-basis: 37%;
+}
+
+.right {
+  order: 2;
+  flex-basis: 63%;
+  height: 350px;
+  overflow-y: auto;
+}
+
+.msgcont {
+    border: #37373a 1px solid;
+    padding: 5px;
+    margin: 5px;
 }
 
 .daimage {
   margin: auto;
-  width: 75%;
+  width: 85%;
 }
 
 .block {
@@ -35,6 +75,14 @@ body {
 
 .space-left {
   margin-left: 20px;
+}
+
+.space-left-pudge {
+  margin-left: 25px;
+}
+
+.space-left-pudge {
+  margin-left: 12px;
 }
 
 
