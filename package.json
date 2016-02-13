@@ -10,7 +10,7 @@
     "lite": "lite-server",
     "dev": "concurrent \"npm run tsc:w\" \"npm start\" ",
     "packagewin": "electron-packager ./ HeyIrssi --out ./builds --version 0.36.7 --platform=win32 --arch=x64 --overwrite --icon=pics/heyirssi-icon-40x40.ico",
-    "packagelin": "electron-packager ./ HeyIrssi --out ./builds --version 0.36.7 --platform=linux --arch=x64 --overwrite",
+    "packagelin": "electron-packager ./ HeyIrssi --out ./builds --version 0.36.7 --platform=linux --arch=x64 --overwrite --icon=pics/heyirssi-icon-40x40.png",
     "packageosx": "electron-packager ./ HeyIrssi --out ./builds --version 0.36.7 --platform=darwin --arch=x64 --overwrite --icon=./pics/heyirssi-icon-osx-40x40.icns"
   },
   "dependencies": {
