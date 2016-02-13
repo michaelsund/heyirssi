@@ -48,7 +48,12 @@ function createWindow() {
     });
     mainWindow.setResizable(false);
     mainWindow.setMenuBarVisibility(true);
-    mainWindow.setSkipTaskbar(true);
+    if (process.platform === 'linux') {
+    	mainWindow.setSkipTaskbar(false);
+    }
+    else {
+    	mainWindow.setSkipTaskbar(true);
+    }
     mainWindow.loadURL('file://' + __dirname + '/index.html');
 
     // mainWindow.webContents.openDevTools();
