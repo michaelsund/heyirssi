@@ -3,12 +3,10 @@
       var BrowserWindow = remote.require('browser-window'); 
  
      function init() { 
-          if (process.platform === 'linux') {
-            document.getElementById("min-btn").addEventListener("click", function (e) {
-              var window = BrowserWindow.getFocusedWindow();
-              window.minimize(); 
-            });
-          }
+          document.getElementById("min-btn").addEventListener("click", function (e) {
+            var window = BrowserWindow.getFocusedWindow();
+            window.minimize(); 
+          });
 // 
 //           document.getElementById("max-btn").addEventListener("click", function (e) {
 //                var window = BrowserWindow.getFocusedWindow(); 
