@@ -22,8 +22,11 @@ my $timer;
 my @threads;
 my $notify_flag = 1;
 my @host_ips = ('13.37.1.10', '13.37.1.114');
+my @ignorelist = ('Luanne');
 my $host_port = '4852';
 my $mynick = 'timotej';
+
+my %ignore = map { $_ => 1 } @ignorelist;
 
 my $ua = LWP::UserAgent->new;
 
@@ -39,19 +42,29 @@ foreach (@host_ips) {
 }
 Irssi::print('on port ' . $host_port);
 
+Irssi::print('ignoring:');
+foreach (@ignorelist) {
+    Irssi::print($_ );
+}
+
+
 sub sig_message_public {
     my ($server, $msg, $nick, $nick_addr, $target) = @_;
     if(index(lc($msg), lc($mynick)) != -1) {
-        $msg = sanitise_msg($msg);
-        send_to_server($msg, $nick, $target);
+        if(!exists($ignore{$nick})) {
+          $msg = sanitise_msg($msg);
+          send_to_server($msg, $nick, $target);
+        }
     }
 }
 
 sub sig_message_private {
     my ($server, $msg, $nick, $nick_addr) = @_;
     my $target = 'Message';
-    $msg = sanitise_msg($msg);
-    send_to_server($msg, $nick, $target);
+    if(!exists($ignore{$nick})) {
+      $msg = sanitise_msg($msg);
+      send_to_server($msg, $nick, $target);
+    }
 }
 
 sub notifier{
@@ -88,6 +101,6 @@ sub send_to_server {
             my $json = '{"msg":' . '"' . $msg . '"' . ',' . '"nick":' . '"' . $nick . '"' .  ',' . '"channel":' . '"' . $target . '"' .'}';
             $req->content($json);
             $ua->request($req);
-        };   
+        };
     }
 }
